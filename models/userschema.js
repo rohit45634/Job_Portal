@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 
 
 // Optional: List of trusted domains (expand this as needed)
@@ -54,6 +55,10 @@ password:{
 },
 {timestamps:true} )
 
+userSchmea.pre('save',async function(){
+  const salt =await bcrypt.genSalt(10)
+  this.password=await bcrypt.hash(this.password,salt)
+})
 const user=mongoose.model("User",userSchmea)
 
 export default user;
