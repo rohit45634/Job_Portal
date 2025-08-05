@@ -1,6 +1,6 @@
 import user from "../models/userschema.js"
 
-const registerController=async(req,res,next)=>{
+ export const registerController=async(req,res,next)=>{
 try {
           const {name,email ,password}=req.body 
           //validate
@@ -22,9 +22,50 @@ if(existingUser){
      next ( "Email already exists")}
           
 const newUser=await user.create({name ,email,password})
-          res.status(201).send({sucess:true,message:"User created successfully ",newUser})
+//token 
+const token=newUser.createJWT()//genrate token 
+
+          res.status(201).send({sucess:true,message:"User created successfully ",
+               user:{
+                    name:newUser.name,
+                    email:newUser.email
+                    ,location:newUser.location
+               },token
+            
+          })
+
+         
 } catch (error) {
        next(error)
 }}
 
-export default registerController;
+
+ export const loginController =async(req,res,next)=>{
+
+     const{email,password}=req.body
+
+     //validation 
+     if(!email|| !password){
+          return next("Please provide all field")
+     }
+///find user by email(extra security)
+     const neuser=await user.findOne({email})
+     if(!neuser){
+          next("Invalid Username and Password")
+     }
+     //compare Password
+     const isMatch=await neuser.comparePassword(password)
+     if(!isMatch){
+          next("Invalid password ")
+     }
+          const token =neuser.createJWT()
+          res.status(200).json({
+               success:"true",
+               message:"login duccessfull",token
+          })
+     
+
+}
+
+
+

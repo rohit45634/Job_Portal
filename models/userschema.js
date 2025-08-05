@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 
 
 // Optional: List of trusted domains (expand this as needed)
@@ -54,11 +55,23 @@ password:{
           }
 },
 {timestamps:true} )
-
+//Hasing password
 userSchmea.pre('save',async function(){
+    if (!this.isModified("password")) return next();
+
   const salt =await bcrypt.genSalt(10)
   this.password=await bcrypt.hash(this.password,salt)
 })
+
+//Cmpare Password 
+userSchmea.methods.comparePassword=async function(userPassword){
+  const isMatch=await bcrypt.compare(userPassword,this.password)
+  return isMatch;
+}
+//JWT token
+userSchmea.methods.createJWT=function(){
+  return jwt.sign({userId:this._id},process.env.JWT_SECRET)
+} 
 const user=mongoose.model("User",userSchmea)
 
 export default user;
