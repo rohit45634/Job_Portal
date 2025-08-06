@@ -48,11 +48,13 @@ password:{
                     type:String,
                     required:true,
                     minlength:[6,"password shuld be grater then 6"],
+                        select: false, // ✅ Correct usage
+
           },
           location:{
                     type:String,
                     default:"Mumbai",
-          }
+          },
 },
 {timestamps:true} )
 //Hasing password

@@ -5,15 +5,15 @@ try {
           const {name,email ,password}=req.body 
           //validate
           if(!name){
-                   next("Please provide the Name")
+                return   next("Please provide the Name")
           }
 
                if(!email){
-                                      next("Please provide the email")
+                                 return     next("Please provide the email")
 
           }
                if(!password){
-                                       next("Please provide the password")
+                                  return     next("Please provide the password")
 
           }
 
@@ -49,14 +49,14 @@ const token=newUser.createJWT()//genrate token
           return next("Please provide all field")
      }
 ///find user by email(extra security)
-     const neuser=await user.findOne({email})
+     const neuser=await user.findOne({email}).select("+password")
      if(!neuser){
-          next("Invalid Username and Password")
+       return   next("Invalid Username and Password")
      }
      //compare Password
      const isMatch=await neuser.comparePassword(password)
      if(!isMatch){
-          next("Invalid password ")
+       return   next("Invalid password ")
      }
           const token =neuser.createJWT()
           res.status(200).json({
