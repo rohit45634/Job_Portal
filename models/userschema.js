@@ -18,32 +18,36 @@ const userSchmea=mongoose.Schema({
           lastname:{
                     type:String
           },
-          email:{
-                    type:String,
-                    required:true,
-                    unique:true,
-                    validate:[validator.isEmail,"please enter valid Email"],
-                
-        validator: function (email) {
-          const parts = email.split("@");
-          if (parts.length !== 2) return false;
-
-          const domain = parts[1];
-
-          // Check if domain ends with a valid TLD
-          return allowedTLDs.some(tld => domain.endsWith(tld));
-        },
-        message: "Email domain must end with a valid extension like .com or .in",
-      
-      
-        validator: function (email) {
-          const domain = email.split("@")[1];
-          return allowedDomains.includes(domain); // strict: only allow real domains
-        },
-        message: "Only common email domains like gmail.com are allowed",
-      
-},
-
+          email: {
+  type: String,
+  required: true,
+  unique: true,
+  validate: [
+    {
+      validator: function (email) {
+        return validator.isEmail(email);
+      },
+      message: "Please enter a valid Email",
+    },
+    {
+      validator: function (email) {
+        const parts = email.split("@");
+        if (parts.length !== 2) return false;
+        const domain = parts[1];
+        return allowedTLDs.some((tld) => domain.endsWith(tld));
+      },
+      message: "Email must end with .com, .in, etc.",
+    },
+    {
+      validator: function (email) {
+        const domain = email.split("@")[1];
+        return allowedDomains.includes(domain);
+      },
+      message: "Only common domains like gmail.com are allowed",
+    },
+  ],
+}
+,
 password:{
                     type:String,
                     required:true,
@@ -59,7 +63,7 @@ password:{
 {timestamps:true} )
 //Hasing password
 userSchmea.pre('save',async function(){
-    if (!this.isModified("password")) return next();
+    if (!this.isModified("password")) return ;
 
   const salt =await bcrypt.genSalt(10)
   this.password=await bcrypt.hash(this.password,salt)

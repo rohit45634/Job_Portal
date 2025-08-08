@@ -5,6 +5,7 @@ import testcontroller from "./controllers/test.js";
 import cors from "cors";
 import morgan from "morgan";
 import validator from "validator";
+import userRoute from "./routes/userRoute.js"
 
 
 //route import
@@ -23,8 +24,7 @@ const app=express();
 //mongodb connection 
 connectdb()
 
-//validation middleware
-app.use(errorMiddleware)
+
 
 const PORT=process.env.PORT ||8080
 
@@ -39,8 +39,12 @@ app.use(express.urlencoded({extended:false}))
 //routes
 app.use('/api/v1',testrout)
 app.use('/api/v1/auth',authroute)
+app.use('/api/v1/user',userRoute)
 
+
+//validation middleware
+app.use(errorMiddleware)
 
 
 //listen
-app.listen(PORT,()=>{`Server on PORT${process.env.PORT}`})
+app.listen(PORT,()=>{console.log(`Server on PORT${process.env.PORT}`)})
