@@ -1,15 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
 
-const jobSchema=new Mongoose.Schema({
+const jobSchema=new mongoose.Schema({
 company:{
           type:String,
           required:[true,'Company name is required']
 },
-postion :{
+position :{
           type:String,
           required:[true,'job position is rquired'],
-          minlength:100
+          maxlength:100
 },
 status:{
           type:String,
@@ -37,6 +37,6 @@ createdBy:{
 
 )
 
-const job=mongoose.Model('job',jobSchema)
+const jobs=mongoose.model('job',jobSchema)
 
-export default job;
+export default jobs;

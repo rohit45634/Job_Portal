@@ -8,10 +8,13 @@ import validator from "validator";
 import userRoute from "./routes/userRoute.js"
 
 
+
 //route import
-import testrout from "./routes/testrout.js"
-import authroute from "./routes/authroute.js"
+import testrout from "./routes/testrout.js";
+import authroute from "./routes/authroute.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
+import jobRouters from "./routes/jobRoute.js";
+import { updateJobController } from "./controllers/jobController.js";
 
 
 
@@ -40,6 +43,8 @@ app.use(express.urlencoded({extended:false}))
 app.use('/api/v1',testrout)
 app.use('/api/v1/auth',authroute)
 app.use('/api/v1/user',userRoute)
+app.use('/api/v1/job',jobRouters)
+
 
 
 //validation middleware
